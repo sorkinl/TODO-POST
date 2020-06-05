@@ -27,17 +27,22 @@ interface TodosState {
   todos: Todo[]
   newTodoName: string
   loadingTodos: boolean
+  newPost: string
 }
 
 export class Todos extends React.PureComponent<TodosProps, TodosState> {
   state: TodosState = {
     todos: [],
     newTodoName: '',
+    newPost: '',
     loadingTodos: true
   }
 
   handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newTodoName: event.target.value })
+  }
+  handlePostChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ newPost: event.target.value })
   }
 
   onEditButtonClick = (todoId: string) => {
@@ -49,6 +54,7 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
       const dueDate = this.calculateDueDate()
       const newTodo = await createTodo(this.props.auth.getIdToken(), {
         name: this.state.newTodoName,
+        post: this.state.newPost,
         dueDate
       })
       this.setState({
@@ -127,8 +133,14 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
             }}
             fluid
             actionPosition="left"
-            placeholder="To change the world..."
+            placeholder="Title"
             onChange={this.handleNameChange}
+          />
+          <Input
+            fluid
+            actionPosition="left"
+            placeholder="Post"
+            onChange={this.handlePostChange}
           />
         </Grid.Column>
         <Grid.Column width={16}>
@@ -170,6 +182,9 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
               </Grid.Column>
               <Grid.Column width={10} verticalAlign="middle">
                 {todo.name}
+              </Grid.Column>
+              <Grid.Column width={10} verticalAlign="middle">
+                {todo.post}
               </Grid.Column>
               <Grid.Column width={3} floated="right">
                 {todo.dueDate}
